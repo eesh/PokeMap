@@ -1,0 +1,27 @@
+{
+  "name": "PokeMap",
+  "version": "1.0.0",
+  "description": "Crowdsourced Map for pokemon Go",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eesh/PokeMap.git"
+  },
+  "keywords": [
+    "PokemonGo"
+  ],
+  "author": "Eesh Chilukalapalli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eesh/PokeMap/issues"
+  },
+  "homepage": "https://github.com/eesh/PokeMap",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongoose": "^4.5.5"
+  }
+}

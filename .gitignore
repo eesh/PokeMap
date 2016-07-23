@@ -3,6 +3,10 @@ logs
 *.log
 npm-debug.log*
 
+#Komodo Project Files
+
+*.komodoproject
+
 # Runtime data
 pids
 *.pid
