@@ -1,17 +1,25 @@
-var Pokemon = require('./models/PokemonSchema');
+var Pokemon = require('../models/PokemonSchema');
 
 exports.getPokemons = function(req, res, err) {
     
-    var location = [ req.body.latitude, req.body.longitude ];
-    var distance = 2/6371;
-    Pokemon.find({ loc : { $near : location, $maxDistance : distance }}, { '_id': 0 }, function(err, pokemons) {
+    var location = [ req.params.longitude, req.params.latitude ];
+    var distance = req.params.distance;
+    Pokemon.find({ loc : { $near: {
+     $geometry: {
+        type: "Point" ,
+        coordinates: location
+     },
+     $maxDistance: distance/1000 } } }, { '_id': 0, '__v': 0 }, function(error, pokemons) {
         
-        if (err) {
+        if (error) {
             
-            res.json({ message : err , success : false });
+            res.json({ message : error , success : false });
+        } else if (pokemons !== null){
+            
+            res.json({ pokemons : pokemons, message: err, success : true });
         } else {
             
-            res.json({ pokemons : pokemons, success : true });
+            res.json({ message : err , success : false });
         }
     });
 };
@@ -25,7 +33,7 @@ exports.postPokemon = function(req, res, err) {
     
     var pokemon = new Pokemon();
     pokemon.name = name;
-    pokemon.loc = [ latitude, longitude ];
+    pokemon.loc = [ longitude, latitude ];
     pokemon.markerID = uid(9);
     
     pokemon.save(function(err) {
@@ -55,22 +63,6 @@ exports.deletePokemon = function(req, res, err) {
         }
     });
 };
-
-
-PokemonSchema.pre('save', function(next) {
-    
-    var pokemon = this;
-    this.findOne({ markerID : pokemon.markerID }, function(err, result) {
-        
-        if(err) {
-            next(err);
-        } else if (result !== null) {
-            
-            this.markerID = uid(9);
-        }
-    });
-    next();
-});
 
 
 function uid (len) {

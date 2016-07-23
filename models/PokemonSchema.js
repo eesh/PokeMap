@@ -3,14 +3,16 @@ var mongoose = require('mongoose');
 var PokemonSchema = mongoose.Schema({
     
     markerID : { type : String, unique : true },
-    loc: {type: [Number], index: '2d'},
+    loc: { type: [Number], index: '2dsphere' },
     name : String
 });
 
+
+/*
 PokemonSchema.pre('save', function(next) {
     
     var pokemon = this;
-    this.findOne({ markerID : pokemon.markerID }, function(err, result) {
+    model.findOne({ markerID : pokemon.markerID }, function(err, result) {
         
         if(err) {
             next(err);
@@ -21,6 +23,7 @@ PokemonSchema.pre('save', function(next) {
     });
     next();
 });
+*/
 
 
 function uid (len) {
