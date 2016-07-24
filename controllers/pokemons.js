@@ -9,7 +9,7 @@ exports.getPokemons = function(req, res, err) {
         type: "Point" ,
         coordinates: location
      },
-     $maxDistance: distance/1000 } } }, { '_id': 0, '__v': 0 }, function(error, pokemons) {
+     $maxDistance: distance*1000 } } }, { '_id': 0, '__v': 0, 'deleteRequests': 0 }, function(error, pokemons) {
         
         if (error) {
             
@@ -35,6 +35,7 @@ exports.postPokemon = function(req, res, err) {
     pokemon.name = name;
     pokemon.loc = [ longitude, latitude ];
     pokemon.markerID = uid(9);
+    pokemon.deleteRequests = 0;
     
     pokemon.save(function(err) {
         
@@ -43,7 +44,7 @@ exports.postPokemon = function(req, res, err) {
             res.json({ message : err, success : false });
         } else {
          
-            res.json({ message : 'Added pokemon to DB', markerId : pokemon.markerID, success : true });   
+            res.json({ message : 'Added pokemon to DB', markerID : pokemon.markerID, success : true });   
         }       
     });
     
@@ -55,17 +56,31 @@ exports.deletePokemon = function(req, res, err) {
     var id = req.body.markerID;
     Pokemon.findOneAndUpdate({ markerID: id }, { $inc: { deleteRequests: 1 } }, function(err, pokemon){
         
-       if(pokemon.deleteRequests > 2) {
-            pokemon.remove(function(err) {
+        if (err) {
+            
+            res.json({ message : err, success : false });
+        } else if (pokemon !== null) {
+            
+            if(pokemon.deleteRequests > 2) {
+                
+                pokemon.remove(function(err) {
+            
+                    if (err) {
+                        res.json({ message : err, success : false });
+                    } else {
+                        
+                        res.json({ message : 'Removed pokemon from DB', success : true });  
+                    }
+                });
+            } else {
+                
+                    res.json({ message : 'Reported pokemon sighting', success : true });
+            }
+        } else {
+         
+            res.json({ message : 'Removed pokemon from DB', success : true });
+        }
         
-                if (err) {
-                    res.json({ message : err, success : false });
-                } else {
-                    
-                    res.json({ message : 'Removed pokemon from DB', success : true });  
-                }
-        });
-       }
     });
 };
 
