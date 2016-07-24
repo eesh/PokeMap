@@ -53,7 +53,7 @@ exports.postPokemon = function(req, res, err) {
 
 exports.deletePokemon = function(req, res, err) {
     
-    var id = req.body.markerID;
+    var id = req.get('markerID');
     Pokemon.findOneAndUpdate({ markerID: id }, { $inc: { deleteRequests: 1 } }, function(err, pokemon){
         
         if (err) {
@@ -78,7 +78,7 @@ exports.deletePokemon = function(req, res, err) {
             }
         } else {
          
-            res.json({ message : 'Removed pokemon from DB', success : true });
+            res.json({ message : 'markerID: '+id+' doesn\'t exist', success : true });
         }
         
     });
