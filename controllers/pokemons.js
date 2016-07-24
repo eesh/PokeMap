@@ -53,14 +53,19 @@ exports.postPokemon = function(req, res, err) {
 exports.deletePokemon = function(req, res, err) {
     
     var id = req.body.markerID;
-    Pokemon.remove({ markerID : id }, function(err) {
+    Pokemon.findOneAndUpdate({ markerID: id }, { $inc: { deleteRequests: 1 } }, function(err, pokemon){
         
-        if (err) {
-            res.json({ message : err, success : false });
-        } else {
-            
-            res.json({ message : 'Removed pokemon from DB', success : true });  
-        }
+       if(pokemon.deleteRequests > 2) {
+            pokemon.remove(function(err) {
+        
+                if (err) {
+                    res.json({ message : err, success : false });
+                } else {
+                    
+                    res.json({ message : 'Removed pokemon from DB', success : true });  
+                }
+        });
+       }
     });
 };
 

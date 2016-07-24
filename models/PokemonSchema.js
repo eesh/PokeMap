@@ -4,7 +4,8 @@ var PokemonSchema = mongoose.Schema({
     
     markerID : { type : String, unique : true },
     loc: { type: [Number], index: '2dsphere' },
-    name : String
+    name : String,
+    deleteRequests : Number
 });
 
 
