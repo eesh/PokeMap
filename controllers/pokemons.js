@@ -43,7 +43,7 @@ exports.postPokemon = function(req, res, err) {
             res.json({ message : err, success : false });
         } else {
          
-            res.json({ message : 'Added pokemon to DB', success : true });   
+            res.json({ message : 'Added pokemon to DB', markerId : pokemon.markerID, success : true });   
         }       
     });
     
